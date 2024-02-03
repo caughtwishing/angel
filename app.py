@@ -1,6 +1,6 @@
 import secrets
 import socket
-from flask import Flask, request
+from flask import Flask, request, render_template
 from utils.funcs import *
 import os
 from mines.algorithm import *
@@ -43,7 +43,6 @@ def simple_limit(limit):
             return f(*args,**kwargs)
         return limiter
     return wrapper
-
 
 @app.route('/uptime',methods=["GET"])
 @simple_limit(limit=5)
@@ -105,6 +104,3 @@ def check_if_valid():
         return jsonify({"msg": "valid key","errors": ["valid_key"]})
     else:
         return jsonify({"msg": "invalid key", "errors": ["invalid_key"]})
-    
-if __name__ == "__main__":
-    app.run(debug=True)
