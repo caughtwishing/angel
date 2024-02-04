@@ -1,11 +1,16 @@
+import json
 from mines.accuracy import *
 
 class Algorithm:
-    def __init__(self,history):
+    def __init__(self, history):
         self.max_tiles = 4
         self.history = history
+
     def predict(self):
-        history = self.history
+        try:
+            history = json.loads(self.history)
+        except json.JSONDecodeError:
+            return "json error", 0.0
 
         board = [0] * 25
         n = 0
