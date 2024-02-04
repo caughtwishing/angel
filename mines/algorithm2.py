@@ -5,6 +5,7 @@ class Algorithm2:
     def __init__(self, history):
         self.max_tiles = 4
         self.history = history
+
     @staticmethod
     def is_neighbor(pos1: int, pos2: int) -> bool:
         row1, col1 = divmod(pos1, 5)
@@ -14,17 +15,24 @@ class Algorithm2:
 
     def predict(self):
         x = self.history
+
+        if not isinstance(x, list):
+            return "history wronggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg", 0.0
+
         maxv = 0
         board = [0] * 25
+
         for ind in range(25):
-            if not Algorithm2.is_neighbor(x[ind], x[max(ind + 1, 24)]) and maxv < self.max_tiles:
-                board[x[ind]] = 1
-                maxv += 1
-            elif maxv >= self.max_tiles:
-                break
+            if ind < len(x):
+                if not Algorithm2.is_neighbor(x[ind], x[max(ind + 1, 24)]) and maxv < self.max_tiles:
+                    board[x[ind]] = 1
+                    maxv += 1
+                elif maxv >= self.max_tiles:
+                    break
             else:
-                pass
+                break
+
         accuracy = get_accuracy(board)
         board = ["✅" if x == 1 else "💣" for x in board]
-        board = "\n".join("".join(map(str, board[i:i + 5])) for i in range(0, len(board), 5))
-        return board, accuracy
+        board_str = "\n".join("".join(map(str, board[i:i + 5])) for i in range(0, len(board), 5))
+        return board_str, accuracy
