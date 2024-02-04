@@ -8,14 +8,16 @@ scraper = cloudscraper.create_scraper(
 )
 
 class Prediction:
-    def gethistory(self):
+    @staticmethod
+    def gethistory():
         response = scraper.get('https://api.bloxflip.com/games/roulette')
         data = response.json()['history'][:16]
         winningColors = [game["winningColor"] for game in data]
         return winningColors
     
-    def predict(self):
-        games = self.gethistory()
+    @staticmethod
+    def predict():
+        games = Prediction.gethistory()
         
         X_train = []
         y_train = []
