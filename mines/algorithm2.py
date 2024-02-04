@@ -5,6 +5,7 @@ class Algorithm2:
     def __init__(self, history):
         self.max_tiles = 4
         self.history = history
+    
     @staticmethod
     def is_neighbor(pos1: int, pos2: int) -> bool:
         row1, col1 = divmod(pos1, 5)
@@ -13,7 +14,7 @@ class Algorithm2:
         return False if distance >= 1 else True
 
     def predict(self):
-        x = self.history
+        x = [int(val) for val in self.history]
         maxv = 0
         board = [0] * 25
         for ind in range(25):
