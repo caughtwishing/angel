@@ -8,7 +8,8 @@ scraper = cloudscraper.create_scraper(
 )
 
 class Prediction:
-    def getGames(self):
+    @staticmethod
+    def getGames():
         r = scraper.get('https://api.bloxflip.com/games/crash').json()
         crashPoints = []
         for i in range(10):
@@ -16,8 +17,9 @@ class Prediction:
             crashPoints.append(crashPoint)
         return crashPoints
 
-    def predict(self):
-        games = np.array(self.getGames())
+    @staticmethod
+    def predict():
+        games = np.array(Prediction.getGames())
         X = np.arange(1, len(games) + 1)
         weights = 1 / np.abs(games)
         m, b = np.polyfit(X, games, deg=1, w=weights)
