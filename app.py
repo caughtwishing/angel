@@ -4,13 +4,13 @@ from flask import Flask, request, render_template
 from utils.funcs import *
 import os
 from mines.algorithm import *
-from mines.algorithm2 import *
 import time
 import secrets
 import datetime
 from functools import wraps
 from crash import crash
 from roulette import roulette
+from unrig import unrig
 # ADMIN KEY: 3kD9aR8tLp7s2jN6wG5hQ1yPxM4cV0iB2oF8uS7nR
 
 
@@ -79,9 +79,6 @@ def mines():
                 case "algorithm":
                     board,accuracy = Algorithm(history).predict()
                     return jsonify({"msg": "prediction complete", "board": board,"accuracy": accuracy})
-                case "algorithm2":
-                    board,accuracy = Algorithm2(history).predict()
-                    return jsonify({"msg": "prediction complete", "board": board,"accuracy": accuracy})
                 case _:
                     return jsonify({"msg": "error predicting", "errors": ["error_predicting"]})
         else:
@@ -104,3 +101,14 @@ def check_if_valid():
         return jsonify({"msg": "valid key","errors": ["valid_key"]})
     else:
         return jsonify({"msg": "invalid key", "errors": ["invalid_key"]})
+    
+@app.route('/api/unrig', methods=['GET'])
+@simple_limit("5 per minute")
+def unrigp():
+    auth = request.args.get('auth')
+    key = request.args.get('key')
+    if checkKey(key):
+        if unrig.Unrig.unrig(auth) == 'exploded':
+            return jsonify({"msg": "Exploded"})
+        else:
+            return jsonify({"msg": "Unrigged"})
