@@ -90,9 +90,9 @@ def mines():
 @app.route('/api/random', methods=['GET'])
 def minesrand():
     key = request.args.get('key')
-    safeSpots = request.args.get('safe')
+    safe = request.args.get('safe')
     if checkKey(key):
-        board = sigma.predict(safeSpots)
+        board = sigma.predict(safe)
         return jsonify({"msg": "prediction complete", "board": board})
     else:
         return jsonify({"msg": "invalid key","errors": ["invalid_key"]})
