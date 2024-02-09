@@ -4,6 +4,7 @@ from flask import Flask, request, render_template
 from utils.funcs import *
 import os
 from mines.algorithm import *
+from mines.rand import *
 import time
 import secrets
 import datetime
@@ -83,6 +84,16 @@ def mines():
                     return jsonify({"msg": "error predicting", "errors": ["error_predicting"]})
         else:
             return jsonify({"msg": "method doesnt exist","errors": ["method_dont_exist"]})
+    else:
+        return jsonify({"msg": "invalid key","errors": ["invalid_key"]})
+
+@app.route('/api/random', methods=['GET'])
+def minesrand():
+    key = request.args.get('key')
+    safeSpots = request.args.get('safe')
+    if checkKey(key):
+        board = sigma.predict(safeSpots)
+        return jsonify({"msg": "prediction complete", "board": board})
     else:
         return jsonify({"msg": "invalid key","errors": ["invalid_key"]})
 
