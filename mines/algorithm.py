@@ -1,5 +1,5 @@
 import json
-from mines.accuracy import get_accuracy
+from mines.accuracy import *
 
 class Algorithm:
     def __init__(self, history):
@@ -24,9 +24,7 @@ class Algorithm:
 
         for v in history:
             if n < self.max_tiles:
-                uncovered_locations = list(map(int, v['uncoveredLocations']))
-                mine_locations = list(map(int, v['mineLocations']))
-                get_spot(uncovered_locations, mine_locations)
+                get_spot(v['uncoveredLocations'], v['mineLocations'])
             else:
                 break
         accuracy = get_accuracy(board)
