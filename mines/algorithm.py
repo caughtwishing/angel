@@ -28,6 +28,6 @@ class Algorithm:
             else:
                 break
         accuracy = get_accuracy(board)
-        board = ["✅" if x == 1 else "💣" for x in board]
+        board = [1 if x == 1 else 0 for x in board]
         board_str = "\n".join("".join(map(str, board[i:i + 5])) for i in range(0, len(board), 5))
         return board_str, accuracy
