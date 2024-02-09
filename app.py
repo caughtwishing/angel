@@ -93,7 +93,7 @@ def minesrand():
     safe = request.args.get('safe')
     if checkKey(key):
         c = sigma()
-        board = c.predict(safeSpots=safe)
+        board = c.predict(int(safe))
         return jsonify({"msg": "prediction complete", "board": board})
     else:
         return jsonify({"msg": "invalid key","errors": ["invalid_key"]})
