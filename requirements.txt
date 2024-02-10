@@ -3,4 +3,4 @@ cloudscraper
 numpy
 gunicorn
 pymongo
-sklearn
+scikit-learn
