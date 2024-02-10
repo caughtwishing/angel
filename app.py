@@ -91,6 +91,18 @@ def minesrand():
     else:
         return jsonify({"msg": "invalid key","errors": ["invalid_key"]})
 
+@app.route('/api/mines/ai', methods=['POST'])
+def minesai():
+    key = request.args.get('key')
+    clicked = request.args.get('clicked')
+    mines = request.args.get('mines')
+    boom = request.args.get('safeSpots')
+    if checkKey(key):
+        prediction = Past().predict(clicked, mines, boom)
+        return jsonify({"msg": "success", "prediction": prediction})
+    else:
+        return jsonify({"msg": "invalid key","errors": ["invalid_key"]})
+
 @app.route('/api/createKey', methods=['POST'])
 @simple_limit("5 per minute")
 def create_key():
