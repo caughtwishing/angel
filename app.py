@@ -82,7 +82,7 @@ def mines():
 @app.route('/api/mines/random', methods=['GET'])
 def minesrand():
     key = request.args.get('key')
-    boom = request.args.get('safe')
+    boom = int(request.args.get('safe'))
     if checkKey(key):
         c = sigma()
         board = c.predict(safeSpots=boom)
