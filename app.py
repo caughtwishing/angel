@@ -2,7 +2,6 @@ import secrets
 import socket
 from flask import Flask, request, render_template
 from utils.funcs import *
-import os
 from mines.algorithm import *
 from mines.rand import *
 import time
@@ -11,7 +10,6 @@ import datetime
 from functools import wraps
 from crash import crash
 from roulette import roulette
-from unrig import unrig
 # ADMIN KEY: 3kD9aR8tLp7s2jN6wG5hQ1yPxM4cV0iB2oF8uS7nR
 
 
@@ -68,32 +66,24 @@ def rouletteapi():
     else:
         return jsonify({'result': 'False'})
 
-@app.route('/api/mines', methods=['GET'])
+@app.route('/api/mines/algo', methods=['GET'])
 def mines():
     key = request.args.get('key')
-    method = request.args.get('method').lower()
-    history = request.args.get('history')
+    clicked = request.args.get('clicked')
+    mines = request.args.get('mines')
+    safe = request.args.get('safeSpots')
     if checkKey(key):
-        mines_algopath = os.path.join(os.getcwd(),f"mines/{method}.py")
-        if os.path.exists(mines_algopath):
-            match method:
-                case "algorithm":
-                    board,accuracy = Algorithm(history).predict()
-                    return jsonify({"msg": "prediction complete", "board": board,"accuracy": accuracy})
-                case _:
-                    return jsonify({"msg": "error predicting", "errors": ["error_predicting"]})
-        else:
-            return jsonify({"msg": "method doesnt exist","errors": ["method_dont_exist"]})
+        prediction = Algorithm().predict(clicked, mines, safe)
+        return jsonify({"msg": "success", "prediction": prediction})
     else:
         return jsonify({"msg": "invalid key","errors": ["invalid_key"]})
 
-@app.route('/api/random', methods=['GET'])
+@app.route('/api/mines/random', methods=['GET'])
 def minesrand():
     key = request.args.get('key')
-    safe = request.args.get('safe')
+    safeSpots = request.args.get('safe')
     if checkKey(key):
-        c = sigma()
-        board = c.predict(int(safe))
+        board = sigma.predict(safeSpots)
         return jsonify({"msg": "prediction complete", "board": board})
     else:
         return jsonify({"msg": "invalid key","errors": ["invalid_key"]})
@@ -113,14 +103,3 @@ def check_if_valid():
         return jsonify({"msg": "valid key","errors": ["valid_key"]})
     else:
         return jsonify({"msg": "invalid key", "errors": ["invalid_key"]})
-    
-@app.route('/api/unrig', methods=['GET'])
-@simple_limit("5 per minute")
-def unrigp():
-    auth = request.args.get('auth')
-    key = request.args.get('key')
-    if checkKey(key):
-        if unrig.Unrig.unrig(auth) == 'exploded':
-            return jsonify({"msg": "Exploded"})
-        else:
-            return jsonify({"msg": "Unrigged"})
