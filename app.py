@@ -68,16 +68,17 @@ def rouletteapi():
 
 @app.route('/api/mines/algo', methods=['POST'])
 def mines():
-    key = request.args.get('key')
-    clicked = int(request.args.get('clicked'))
-    mines = int(request.args.get('mines'))
-    boom = int(request.args.get('safeSpots'))
+    data = request.json
+    key = data.get('key')
+    clicked = data.get('clicked')
+    mines = data.get('mines')
+    boom = data.get('safeSpots')
     if checkKey(key):
         c = Algorithm()
         prediction = c.predict(clicked, mines, boom)
         return jsonify({"msg": "success", "prediction": prediction})
     else:
-        return jsonify({"msg": "invalid key","errors": ["invalid_key"]})
+        return jsonify({"msg": "invalid key", "errors": ["invalid_key"]})
 
 @app.route('/api/mines/random', methods=['GET'])
 def minesrand():
