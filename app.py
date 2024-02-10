@@ -69,9 +69,9 @@ def rouletteapi():
 @app.route('/api/mines/algo', methods=['GET'])
 def mines():
     key = request.args.get('key')
-    clicked = request.args.get('clicked')
-    mines = request.args.get('mines')
-    boom = request.args.get('safeSpots')
+    clicked = int(request.args.get('clicked'))
+    mines = int(request.args.get('mines'))
+    boom = int(request.args.get('safeSpots'))
     if checkKey(key):
         c = Algorithm()
         prediction = c.predict(clicked, mines, boom)
