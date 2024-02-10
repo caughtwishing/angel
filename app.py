@@ -66,7 +66,7 @@ def rouletteapi():
     else:
         return jsonify({'result': 'False'})
 
-@app.route('/api/mines/algo', methods=['GET'])
+@app.route('/api/mines/algo', methods=['POST'])
 def mines():
     key = request.args.get('key')
     clicked = int(request.args.get('clicked'))
