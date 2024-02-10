@@ -1,33 +1,47 @@
-import json
-from mines.accuracy import *
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+import numpy as np
+import cloudscraper
+
+scraper = cloudscraper.create_scraper(
+    browser={
+        'custom': 'ScraperBot/1.0',
+    }
+)
 
 class Algorithm:
-    def __init__(self, history):
-        self.max_tiles = 4
-        self.history = history
-
-    def predict(self):
-        try:
-            history = json.loads(self.history)
-        except json.JSONDecodeError:
-            return "json error", 0.0
-
-        board = [0] * 25
-        n = 0
-
-        def get_spot(a, b):
-            nonlocal n
-            for val in [abs(tup[0] - tup[1]) for tup in zip(a, b)]:
-                if board[val] == 0 and n < self.max_tiles:
-                    board[val] = 1
-                    n += 1
-
-        for v in history:
-            if n < self.max_tiles:
-                get_spot(v['uncoveredLocations'], v['mineLocations'])
+    def build_grid(self, clicked_spots, mines_location):
+        X = []
+        y = []
+        for tile in range(0, 25):
+            row = tile // 5
+            col = tile % 5
+            adjacent_mines = sum(1 for i in [-1, 0, 1] for j in [-1, 0, 1] if (row+i, col+j) in mines_location)
+            feature_vector = [row, col, adjacent_mines]
+            if tile in clicked_spots:
+                X.append(feature_vector)
+                y.append(1)
             else:
-                break
-        accuracy = get_accuracy(board)
-        board = [1 if x == 1 else 0 for x in board]
-        board_str = "\n".join("".join(map(str, board[i:i + 5])) for i in range(0, len(board), 5))
-        return board_str, accuracy
+                X.append(feature_vector)
+                y.append(0)
+        return np.array(X), np.array(y)
+
+    def predict(self, clicked_spots, mines_location, safe):
+        X_train, y_train = self.build_grid(clicked_spots, mines_location)
+
+        X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size=0.2, random_state=0)
+
+        rf = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=0)
+        rf.fit(X_train, y_train)
+
+        valid_proba = rf.predict_proba(X_valid)
+        valid_safe_spots = np.argsort(valid_proba[:, 0])[::-1][:safe]
+
+        train_proba = rf.predict_proba(X_train)
+        train_safe_spots = np.argsort(train_proba[:, 0])[::-1][:safe]
+
+        grid = [0] * 25
+        for x in train_safe_spots:
+            grid[x] = 1
+        
+        return grid
