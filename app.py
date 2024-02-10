@@ -71,9 +71,9 @@ def mines():
     key = request.args.get('key')
     clicked = request.args.get('clicked')
     mines = request.args.get('mines')
-    safe = request.args.get('safeSpots')
+    boom = request.args.get('safeSpots')
     if checkKey(key):
-        prediction = Algorithm().predict(clicked, mines, safe)
+        prediction = Algorithm().predict(clicked, mines, boom)
         return jsonify({"msg": "success", "prediction": prediction})
     else:
         return jsonify({"msg": "invalid key","errors": ["invalid_key"]})
@@ -81,9 +81,9 @@ def mines():
 @app.route('/api/mines/random', methods=['GET'])
 def minesrand():
     key = request.args.get('key')
-    safeSpots = request.args.get('safe')
+    safe = request.args.get('safe')
     if checkKey(key):
-        board = sigma.predict(safeSpots)
+        board = sigma.predict(safe)
         return jsonify({"msg": "prediction complete", "board": board})
     else:
         return jsonify({"msg": "invalid key","errors": ["invalid_key"]})
@@ -103,3 +103,7 @@ def check_if_valid():
         return jsonify({"msg": "valid key","errors": ["valid_key"]})
     else:
         return jsonify({"msg": "invalid key", "errors": ["invalid_key"]})
+    
+
+if __name__ == "__main__":
+    app.run()
