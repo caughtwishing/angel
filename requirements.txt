@@ -3,3 +3,4 @@ cloudscraper
 numpy
 gunicorn
 pymongo
+sklearn
