@@ -35,7 +35,7 @@ class Prediction:
             transition_matrix[Xtrainencodedd[i-1], Xtrainencodedd[i]] += 1
         transition_matrix /= transition_matrix.sum(axis=1, keepdims=True)
         lastcolor = colortoindex[games[-1]]
-        predictionencoded = np.random.choice(len(unique), p=transition_matrix[lastcolor])
+        predictionencoded = np.argmax(transition_matrix[lastcolor])
         prediction = indextocolor[predictionencoded]
         
         return prediction
