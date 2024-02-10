@@ -73,7 +73,8 @@ def mines():
     mines = request.args.get('mines')
     boom = request.args.get('safeSpots')
     if checkKey(key):
-        prediction = Algorithm().predict(clicked, mines, boom)
+        c = Algorithm()
+        prediction = c.predict(clicked, mines, boom)
         return jsonify({"msg": "success", "prediction": prediction})
     else:
         return jsonify({"msg": "invalid key","errors": ["invalid_key"]})
@@ -83,7 +84,8 @@ def minesrand():
     key = request.args.get('key')
     boom = request.args.get('safe')
     if checkKey(key):
-        board = sigma.predict(safeSpots=boom)
+        c = sigma()
+        board = c.predict(safeSpots=boom)
         return jsonify({"msg": "prediction complete", "board": board})
     else:
         return jsonify({"msg": "invalid key","errors": ["invalid_key"]})
